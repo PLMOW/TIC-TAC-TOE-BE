@@ -6,6 +6,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,9 +20,8 @@ public class MusicParserController {
     }
 
     @GetMapping
-    public JSONArray getName() throws ParseException, JsonProcessingException {
-        System.out.println(musicParserService.getList());
-        return musicParserService.getList();
+    public JSONArray getName(@RequestParam("query") String query) throws ParseException, JsonProcessingException {
+        return musicParserService.getList(query);
     }
 
 }

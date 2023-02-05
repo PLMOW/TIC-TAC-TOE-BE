@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 
 public interface MusicParserService {
-    public JSONArray getList() throws ParseException, JsonProcessingException;
-
+    public JSONArray getList(@RequestParam("query") String query) throws ParseException, JsonProcessingException;
 
 }

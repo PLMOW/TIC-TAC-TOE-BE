@@ -7,12 +7,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,11 +24,12 @@ import java.util.regex.Pattern;
 @Service
 public class MusicParserServiceImpl implements MusicParserService {
     @Override
-    public JSONArray getList() throws JsonProcessingException {
+    public JSONArray getList(@RequestParam("query") String query) throws JsonProcessingException {
         URI uri = UriComponentsBuilder
                 .fromUriString("https://www.youtube.com")
                 .path("/results")
-                .queryParam("search_query","adele")
+                .encode(StandardCharsets.UTF_8)
+                .queryParam("search_query",query)
                 .build()
                 .toUri();
         RestTemplate restTemplate = new RestTemplate();
@@ -65,15 +69,12 @@ public class MusicParserServiceImpl implements MusicParserService {
                     }
                 }
                 JsonNode owner = jsonNode.get(i).get("videoRenderer").get("ownerText").get("runs").get(0).get("text");
-                String strOwner = owner.toString().replaceAll("\"", "");
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("title",title);
                 jsonObject.put("id",strId);
                 jsonObject.put("thumbnail",strThumbnail);
                 jsonObject.put("duration",strDuration);
-                jsonObject.put("owner",strOwner);
-                jsonObject.put("titleData",titleData);
-                jsonObject.put("owner1",owner); // 나중에 jsonObject형태로 그냥 넣어도 똑같이 return되는지 실험해볼 것
+                jsonObject.put("owner",owner);
                 jsonArray.add(jsonObject);
             }
 
